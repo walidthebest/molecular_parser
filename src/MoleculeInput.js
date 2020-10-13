@@ -1,4 +1,3 @@
-import { render } from "@testing-library/react";
 import React, { Component } from "react";
 import { check } from "./api";
 
@@ -8,11 +7,10 @@ class MoleculeInput extends Component {
   //Arrow fx for binding
   handleMoleculeState = (event) => {
     var molecule = event.target.value;
+    this.setState({ molecule });
     check(molecule)
       .then((response) => {
-        var statusCode = response.status;
-        var valid = statusCode === 200;
-        this.setState({ valid, molecule });
+        this.setState({ valid: response.status === 200 });
         return response.json();
       })
       .then((data) => console.log(data.message));
@@ -22,7 +20,7 @@ class MoleculeInput extends Component {
     this.props.molecule_parser(this.state.molecule);
   };
   render() {
-    const { valid } = this.state;
+    const { valid, molecule } = this.state;
     return (
       <form onSubmit={this.parse}>
         <p>
@@ -31,7 +29,7 @@ class MoleculeInput extends Component {
             <input
               type="text"
               onChange={this.handleMoleculeState}
-              value={this.state.molecule}
+              value={molecule}
             />
             {valid ? <span>Valid</span> : <span> Not Valid</span>}
           </label>

@@ -6,22 +6,12 @@ import AtomCount from "./AtomCount";
 import { parse } from "./api";
 
 class App extends Component {
-  state = {
-    atoms: [],
-  };
+  state = { atoms: [] };
 
-  parse = (molecule) => {
-    var new_atoms = [];
+  parseMolecule = (molecule) => {
     parse(molecule)
       .then((response) => response.json())
-      .then((result) => {
-        const output = result.output;
-        for (var key in result.output) {
-          new_atoms.push({ symbol: key, count: output[key] });
-        }
-        return new_atoms;
-      })
-      .then((atoms) => this.setState({ atoms }));
+      .then((result) => this.setState({ atoms: result.output }));
   };
 
   render() {
@@ -30,8 +20,8 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <MoleculeInput molecule_parser={this.parse} />
-          {atoms != [] &&
+          <MoleculeInput molecule_parser={this.parseMolecule} />
+          {atoms !== [] &&
             atoms.map(function (atom, index) {
               return (
                 <AtomCount
