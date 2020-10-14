@@ -22,14 +22,9 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <MoleculeInput molecule_parser={this.parseMolecule} />
           {atoms !== [] &&
-            atoms.map(function (atom, index) {
-              return (
-                <AtomCount
-                  symbol={atom.symbol}
-                  count={atom.count}
-                  key={index}
-                />
-              );
+            atoms.map(function (atom) {
+              const { symbol, count } = atom;
+              return <AtomCount symbol={symbol} count={count} key={symbol} />;
             })}
         </header>
       </div>

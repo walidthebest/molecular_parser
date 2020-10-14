@@ -4,7 +4,7 @@ import "./MoleculeInput.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-function MoleculeInput() {
+function MoleculeInput(props) {
   const [valid, setValid] = useState(true);
   const [molecule, setMolecule] = useState("");
 
@@ -18,11 +18,15 @@ function MoleculeInput() {
         valid !== (response.status === 200) && setValid(!valid);
         return response.json();
       })
-      .then((data) => console.log(data.message));
+      .then((data) => console.log(data.error));
   };
   const parse = (event) => {
     event.preventDefault();
-    this.props.molecule_parser(molecule);
+    if (valid) {
+      props.molecule_parser(molecule);
+    } else {
+      alert("Warning : Invalid Molecule Pattern !");
+    }
   };
   return (
     <form onSubmit={parse}>
