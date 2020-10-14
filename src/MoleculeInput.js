@@ -1,43 +1,46 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { check } from "./api";
+import "./MoleculeInput.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
-class MoleculeInput extends Component {
-  state = { valid: true, molecule: "" };
+function MoleculeInput() {
+  const [valid, setValid] = useState(true);
+  const [molecule, setMolecule] = useState("");
 
   //Arrow fx for binding
-  handleMoleculeState = (event) => {
+  const handleMoleculeState = (event) => {
     var molecule = event.target.value;
-    this.setState({ molecule });
+    setMolecule(molecule);
     check(molecule)
       .then((response) => {
-        this.setState({ valid: response.status === 200 });
+        console.log(response.status);
+        valid !== (response.status === 200) && setValid(!valid);
         return response.json();
       })
       .then((data) => console.log(data.message));
   };
-  parse = (event) => {
+  const parse = (event) => {
     event.preventDefault();
-    this.props.molecule_parser(this.state.molecule);
+    this.props.molecule_parser(molecule);
   };
-  render() {
-    const { valid, molecule } = this.state;
-    return (
-      <form onSubmit={this.parse}>
-        <p>
-          <label>
-            Please enter a molecule
-            <input
-              type="text"
-              onChange={this.handleMoleculeState}
-              value={molecule}
-            />
-            {valid ? <span>Valid</span> : <span> Not Valid</span>}
-          </label>
-          <button type="submit">J’ai gagné !</button>
-        </p>
-      </form>
-    );
-  }
+  return (
+    <form onSubmit={parse}>
+      <p>
+        Please enter a molecule
+        <label>
+          <input type="text" onChange={handleMoleculeState} value={molecule} />
+          {molecule !== "" &&
+            (valid ? (
+              <FontAwesomeIcon className="checkSign green" icon={faCheck} />
+            ) : (
+              <FontAwesomeIcon className="checkSign red" icon={faTimes} />
+            ))}
+        </label>
+        <button type="submit">J’ai gagné !</button>
+      </p>
+    </form>
+  );
 }
 
 export default MoleculeInput;
